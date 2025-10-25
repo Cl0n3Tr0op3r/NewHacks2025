@@ -1,8 +1,11 @@
 import express from "express"; // or: const express = require("express"); if using CommonJS
-const app = express();
+import cors from "cors";
 
+const app = express();
+app.use(cors({ origin: "*" }));
 app.get("/", (req, res) => {
-  res.send("Hello world");
+  console.log("test")
+  res.json("Hello world");
 });
 
 app.listen(3000, () => {
