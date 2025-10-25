@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "TL;DR - summarize your reddit thread.",
+  "version": "1.0.0",
+  "content_scripts": [
+    {
+      "matches": ["https://www.reddit.com/*"],
+      "js": ["frontend/content.js"]
+    }
+  ]
+}
