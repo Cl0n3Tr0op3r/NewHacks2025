@@ -2,6 +2,19 @@
   "manifest_version": 3,
   "name": "TL;DR - summarize your reddit thread.",
   "version": "1.0.0",
+
+  "permissions": ["activeTab", "tabs"],
+  "host_permissions": [
+    "https://www.reddit.com/*",
+    "https://old.reddit.com/*",
+    "<all_urls>"
+  ],
+
+  "action": {
+    "default_popup": "frontend/popup/popup.html",
+    "default_icon": "assets/semicolon.png"
+  },
+
   "content_scripts": [
     {
       "matches": ["https://www.reddit.com/*"],
