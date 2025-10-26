@@ -1,0 +1,5 @@
+{
+  "name": "iamadhdtdlrme",
+  "description": "A web application that uses AI to provide TL;DR summaries of Reddit subreddits, inspired by the clean landing page style of findingnemo.co.",
+  "requestFramePermissions": []
+}
