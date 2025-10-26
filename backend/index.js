@@ -46,7 +46,7 @@ const callingGemini = async(textOfPost) => {
   const ai = new GoogleGenAI({});
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
-    contents: `Summarize ${textOfPost} into 3 bullet points`,
+    contents: `Summarize ${textOfPost} into 1 bullet point`,
   });
   console.log(response.text)
   return response.text;

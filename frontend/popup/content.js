@@ -1,6 +1,8 @@
 console.log("✅ content.js loaded on", window.location.href);
 
 chrome.runtime.onMessage.addListener((msg) => {
+  const tldrText = msg.summaryText || "📄 No summary provided.";
+  console.log(tldrText)
   console.log("TLDR msg recieved")
   if (msg.action === "toggle-tldr") {
     const postBody = document.querySelector("shreddit-post-text-body");
@@ -9,10 +11,9 @@ chrome.runtime.onMessage.addListener((msg) => {
         // hide the original text
         postBody.style.display = "none";
 
-        // create and insert TL;DR div
+        // create TL;DR container div
         const tldr = document.createElement("div");
         tldr.id = "tldr-inline";
-        tldr.textContent = "📄 TL;DR: UofT is tough, but burnout isn’t worth it. Balance > grind.";
         Object.assign(tldr.style, {
           background: "#fffbe6",
           border: "1px solid #ccc",
@@ -24,7 +25,24 @@ chrome.runtime.onMessage.addListener((msg) => {
           lineHeight: "1.5",
         });
 
-        // insert right before the original element
+        // create header element (goes above summary text)
+        const header = document.createElement("div");
+        header.textContent = "📄 TL;DR Summary";
+        Object.assign(header.style, {
+          fontWeight: "bold",
+          fontSize: "15px",
+          marginBottom: "6px",
+        });
+
+        // create main summary text
+        const text = document.createElement("div");
+        text.textContent = tldrText;
+
+        // append both into the same background box
+        tldr.appendChild(header);
+        tldr.appendChild(text);
+
+        // insert before original post
         postBody.insertAdjacentElement("beforebegin", tldr);
         postBody.dataset.tldrApplied = "1";
       } else {
