@@ -1,9 +1,17 @@
 console.log("✅ content.js loaded on", window.location.href);
 
+window.addEventListener("error", (event) => {
+  if (event.message.includes("Connection has been terminated")) {
+    event.stopImmediatePropagation();
+  }
+});
+
+
 chrome.runtime.onMessage.addListener((msg) => {
   const tldrText = msg.summaryText || "📄 No summary provided.";
   console.log(tldrText)
   console.log("TLDR msg recieved")
+
   if (msg.action === "toggle-tldr") {
     const postBody = document.querySelector("shreddit-post-text-body");
     if (postBody) {
@@ -54,6 +62,20 @@ chrome.runtime.onMessage.addListener((msg) => {
       }
     } else {
       console.warn("⚠️ Could not find <shreddit-post-text-body>");
+    }
+  }
+
+  if (msg.action === "toggle-tldr-feed") {
+    console.log("🧩 Feed TL;DR toggle triggered");
+
+    const alreadyApplied = document.querySelector("[data-tldr-feed-applied]");
+
+    if (!alreadyApplied) {
+      applyTLDRToVisiblePreviews("UofT is hard, but you can manage with balance.");
+      document.body.dataset.tldrFeedApplied = "1";
+    } else {
+      restorePreviews();
+      delete document.body.dataset.tldrFeedApplied;
     }
   }
 });
