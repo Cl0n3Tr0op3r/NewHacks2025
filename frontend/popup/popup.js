@@ -6,14 +6,12 @@ document.getElementById("summarizeBtn").addEventListener("click", async () => {
     console.log("HEREEE")
     // Get active tab information
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    await chrome.tabs.sendMessage(tab.id, { action: "toggle-tldr" });
+    //await chrome.tabs.sendMessage(tab.id, { action: "toggle-tldr" });
 
     console.log("Tab object:", tab);
 
-    if (tab && tab.url) {
-      status.textContent = `Current Reddit URL!!:\n${tab.url}`;
-    } else {
-      status.textContent = "Unable to retrieve URL. Try reloading the page or extension.";
+    if (!tab || !tab.url) {
+        status.textContent = "Unable to retrieve URL. Try reloading the page or extension.";
     }
 
     const output = document.getElementById("output");
@@ -24,6 +22,9 @@ document.getElementById("summarizeBtn").addEventListener("click", async () => {
     });
     const data = await resp.json();
     output.textContent = data.message
+    await chrome.tabs.sendMessage(tab.id, { action: "toggle-tldr", 
+        summaryText: data.message
+    });
     
 
   } catch (err) {
