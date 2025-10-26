@@ -57,3 +57,41 @@ chrome.runtime.onMessage.addListener((msg) => {
     }
   }
 });
+
+
+// --- Continuous scroll detection ---
+let scrollTimer = null;
+
+window.addEventListener("scroll", () => {
+  clearTimeout(scrollTimer);
+
+  scrollTimer = setTimeout(() => {
+    console.log("🧘 User stopped scrolling.");
+
+    const allLinks = document.querySelectorAll("a");
+    const postSet = new Set(); // store unique links
+
+    allLinks.forEach(link => {
+      const rect = link.getBoundingClientRect();
+      const isVisible =
+        rect.top >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.left >= 0 &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth);
+
+      const href = link.href || "";
+      const isRedditPost = href.match(/^https:\/\/www\.reddit\.com\/r\/[^/]+\/comments\//);
+
+      if (isVisible && isRedditPost) {
+        // store base URL only (cut off after post ID)
+        const basePostUrl = href.split("/comments/")[1]?.split("/")[0];
+        if (basePostUrl) {
+          postSet.add(href);
+        }
+      }
+    });
+
+    const visibleLinks = Array.from(postSet);
+    console.log(`🧾 Found ${visibleLinks.length} visible Reddit post links:`, visibleLinks);
+  }, 1000);
+});
