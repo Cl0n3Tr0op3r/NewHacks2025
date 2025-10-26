@@ -7,6 +7,7 @@ const app = express();
 app.use(cors({ origin: "*" }));
 app.use(express.json());
 dotenv.config();
+
 app.post('/', async (req, res) => {
   try {
     const {url} = req.body

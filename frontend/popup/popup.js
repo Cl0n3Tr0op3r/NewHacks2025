@@ -1,11 +1,13 @@
 document.getElementById("summarizeBtn").addEventListener("click", async () => {
   const status = document.getElementById("status");
-  status.textContent = "Fetching current tab URL...";
+  status.textContent = "Fetching current tab URL...!!!!";
 
   try {
     console.log("HEREEE")
     // Get active tab information
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    await chrome.tabs.sendMessage(tab.id, { action: "toggle-tldr" });
+
     console.log("Tab object:", tab);
 
     if (tab && tab.url) {
@@ -28,4 +30,5 @@ document.getElementById("summarizeBtn").addEventListener("click", async () => {
     console.error("Error fetching tab:", err);
     output.textContent = "Error fetching current tab URL.";
   }
+
 });
