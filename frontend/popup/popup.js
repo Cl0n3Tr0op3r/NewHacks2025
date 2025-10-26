@@ -1,6 +1,6 @@
 document.getElementById("summarizeBtn").addEventListener("click", async () => {
-  const output = document.getElementById("output");
-  output.textContent = "Fetching current tab URL...";
+  const status = document.getElementById("status");
+  status.textContent = "Fetching current tab URL...";
 
   try {
     console.log("HEREEE")
@@ -9,26 +9,23 @@ document.getElementById("summarizeBtn").addEventListener("click", async () => {
     console.log("Tab object:", tab);
 
     if (tab && tab.url) {
-      output.textContent = `Current Reddit URL!!:\n${tab.url}`;
+      status.textContent = `Current Reddit URL!!:\n${tab.url}`;
     } else {
-      output.textContent = "⚠️ Unable to retrieve URL. Try reloading the page or extension.";
+      status.textContent = "Unable to retrieve URL. Try reloading the page or extension.";
     }
-    // const resp = await fetch("https://localhost:3000", {
-    //   method: "GET",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({ url: tab.url })
-    // });
 
-    const resp = await fetch(`http://localhost:3000/`, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" }
-  });
+    const output = document.getElementById("output");
+    const resp = await fetch("http://localhost:3000/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url: tab.url })
+    });
     const data = await resp.json();
-    output.textContent = data
+    output.textContent = data.message
     
+
   } catch (err) {
     console.error("Error fetching tab:", err);
     output.textContent = "Error fetching current tab URL.";
   }
-
 });
