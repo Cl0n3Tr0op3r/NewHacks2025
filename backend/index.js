@@ -10,6 +10,7 @@ dotenv.config();
 
 app.post('/', async (req, res) => {
   try {
+    console.log("this is server")
     const {url} = req.body
     if (!url) {
       return res.status(400).json({ error: "Missing url" });
@@ -46,7 +47,7 @@ const callingGemini = async(textOfPost) => {
   const ai = new GoogleGenAI({});
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
-    contents: `Summarize ${textOfPost} into 1 bullet point`,
+    contents: `Summarize ${textOfPost} into 1 short bullet point`,
   });
   console.log(response.text)
   return response.text;
