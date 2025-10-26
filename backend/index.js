@@ -1,15 +1,12 @@
-import express from "express"; // or: const express = require("express"); if using CommonJS
+import express, { text } from "express"; // or: const express = require("express"); if using CommonJS
 import cors from "cors";
-
+import dotenv from "dotenv";
+import { GoogleGenAI } from "@google/genai";
 
 const app = express();
 app.use(cors({ origin: "*" }));
 app.use(express.json());
-
-// app.get("/", (req, res) => {
-//   res.json({ message: "Hello world" });
-// });
-
+dotenv.config();
 app.post('/', async (req, res) => {
   try {
     const {url} = req.body
@@ -26,13 +23,16 @@ app.post('/', async (req, res) => {
       "Accept": "application/json"
     }
     });
-    
+    console.log("here1")
     if (!redditResp.ok) {
       const text = await redditResp.json();
       return res.status(500).json({ error: "Failed to fetch Reddit data", text });
     }
+    console.log("here")
     const redditData = await redditResp.json();
     const textOfPost = redditData[0].data.children[0].data.selftext
+    const geminiResult = await callingGemini(textOfPost);
+    return res.json({message: geminiResult})
   }
   catch (error) {
     console.log(error)
@@ -40,6 +40,16 @@ app.post('/', async (req, res) => {
   }
 })
 
+const callingGemini = async(textOfPost) => {
+  console.log("called helper function")
+  const ai = new GoogleGenAI({});
+  const response = await ai.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: `Summarize ${textOfPost} into 3 bullet points`,
+  });
+  console.log(response.text)
+  return response.text;
+}
 app.listen(3000, () => {
   console.log("Server running on http://localhost:3000");
 });
